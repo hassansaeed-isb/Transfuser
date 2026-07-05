@@ -1,0 +1,35 @@
+# Model checkpoints (download separately, see guide)
+*.pth
+*.pt
+*.ckpt
+
+# CARLA / large downloads
+CARLA_*/
+*.tar.gz
+*.zip
+Import/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.venv_eval/
+venv/
+env/
+
+# Evaluation outputs
+results/
+*.json.log
+demo_*.mp4
+*.cast
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Keep model_ckpt config templates but not weights
+!model_ckpt/**/args.txt
+!model_ckpt/**/README.txt
