@@ -265,10 +265,19 @@ export CARLA_ROOT=~/workspace/CARLA_0.9.16
 This will:
 
 1. Create `.venv_eval/`
-2. Install PyTorch with CUDA 12.x
+2. Install PyTorch with **CUDA 12.8** (`cu128`) — required for RTX 50-series (Blackwell / sm_120)
 3. Install evaluation dependencies from `requirements_eval.txt`
 4. Install the CARLA 0.9.16 Python wheel
 5. Run `scripts/verify_environment.py`
+
+> **Why cu128?** RTX 5090 is compute capability **sm_120**. Only PyTorch built with
+> **CUDA 12.8** (PyTorch ≥ 2.7) ships sm_120 kernels. `cu124`/`cu126` wheels will fail with
+> `CUDA error: no kernel image is available for execution on the device`.
+>
+> If the stable wheel isn't available for your Python, use the nightly:
+> ```bash
+> TORCH_INDEX_URL=https://download.pytorch.org/whl/nightly/cu128 ./scripts/setup_environment.sh
+> ```
 
 ### Step F2 — Activate environment
 

@@ -21,8 +21,19 @@ source "${VENV_DIR}/bin/activate"
 
 python -m pip install --upgrade pip wheel setuptools
 
-echo "Installing PyTorch (CUDA 12.x build for RTX 50-series) ..."
-python -m pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124
+# RTX 50-series (Blackwell, sm_120) REQUIRES a CUDA 12.8 build (PyTorch >= 2.7).
+# cu124/cu126 wheels do NOT contain sm_120 kernels and will fail with
+# "no kernel image is available for execution on the device".
+TORCH_INDEX_URL="${TORCH_INDEX_URL:-https://download.pytorch.org/whl/cu128}"
+echo "Installing PyTorch (CUDA 12.8 build for RTX 50-series) from ${TORCH_INDEX_URL} ..."
+PRE_FLAG=""
+if [[ "${TORCH_INDEX_URL}" == *nightly* ]]; then
+  PRE_FLAG="--pre"
+fi
+python -m pip install ${PRE_FLAG} torch torchvision --index-url "${TORCH_INDEX_URL}"
+
+# If the stable cu128 wheel is unavailable for your Python version, use the nightly:
+#   TORCH_INDEX_URL=https://download.pytorch.org/whl/nightly/cu128 ./scripts/setup_environment.sh
 
 echo "Installing evaluation dependencies ..."
 python -m pip install -r "${WORK_DIR}/requirements_eval.txt"
