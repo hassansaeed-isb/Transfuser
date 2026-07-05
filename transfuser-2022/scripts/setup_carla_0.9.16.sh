@@ -16,9 +16,28 @@ if [[ ! -f "CARLA_0.9.16.tar.gz" ]]; then
   wget -O CARLA_0.9.16.tar.gz "${CARLA_URL}"
 fi
 
-if [[ ! -d "${INSTALL_DIR}" ]]; then
-  echo "Extracting CARLA ..."
-  tar -xzf CARLA_0.9.16.tar.gz
+# The CARLA 0.9.16 Linux tarball extracts its files directly (no top-level
+# CARLA_0.9.16/ folder), so we always extract INTO the target directory with -C.
+if [[ ! -f "${INSTALL_DIR}/CarlaUE4.sh" ]]; then
+  echo "Extracting CARLA into ${INSTALL_DIR} ..."
+  mkdir -p "${INSTALL_DIR}"
+  tar -xzf CARLA_0.9.16.tar.gz -C "${INSTALL_DIR}"
+
+  # Handle the case where the tar DID contain a single top-level folder.
+  if [[ ! -f "${INSTALL_DIR}/CarlaUE4.sh" ]]; then
+    inner="$(find "${INSTALL_DIR}" -maxdepth 2 -name CarlaUE4.sh | head -n 1 || true)"
+    if [[ -n "${inner}" ]]; then
+      inner_dir="$(dirname "${inner}")"
+      echo "Flattening nested folder ${inner_dir} ..."
+      mv "${inner_dir}"/* "${INSTALL_DIR}/" 2>/dev/null || true
+    fi
+  fi
+fi
+
+if [[ ! -f "${INSTALL_DIR}/CarlaUE4.sh" ]]; then
+  echo "ERROR: CarlaUE4.sh still not found in ${INSTALL_DIR} after extraction."
+  echo "Check the downloaded archive and extract manually."
+  exit 1
 fi
 
 if [[ ! -f "AdditionalMaps_0.9.16.tar.gz" ]]; then

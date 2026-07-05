@@ -129,12 +129,20 @@ wget "https://tiny.carla.org/additional-maps-0-9-16-linux" -O AdditionalMaps_0.9
 
 ### Step C3 — Extract CARLA
 
+> **Important:** The CARLA 0.9.16 Linux tarball extracts its files **directly** into the
+> current directory (there is **no** `CARLA_0.9.16/` wrapper folder inside it). So you must
+> create the target folder first and extract **into** it with `-C`. If you just run
+> `tar -xzf CARLA_0.9.16.tar.gz`, `CarlaUE4.sh`/`ImportAssets.sh` land in `~/workspace` and
+> later steps fail with `chmod: cannot access 'CarlaUE4.sh'`.
+
 ```bash
-tar -xzf CARLA_0.9.16.tar.gz
-ls
+cd ~/workspace
+mkdir -p CARLA_0.9.16
+tar -xzf CARLA_0.9.16.tar.gz -C CARLA_0.9.16
+ls CARLA_0.9.16
 ```
 
-You should see `CARLA_0.9.16/`.
+You should now see `CarlaUE4.sh`, `ImportAssets.sh`, and `PythonAPI/` inside `CARLA_0.9.16/`.
 
 ### Step C4 — Import additional maps
 
